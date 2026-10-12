@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Tangleout challenge</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+         background: linear-gradient(160deg, #2a2148, #131a3a 60%, #0c0f24); color: #f1eeff;
+         font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { width: 100%; max-width: 420px; padding: 32px 16px; text-align: center; box-sizing: border-box; }
+  h1 { margin: 0 0 8px; font-size: 34px; letter-spacing: 1px; }
+  p { margin: 0 0 20px; color: #b9b3dd; }
+  .code { display: none; margin: 0 0 20px; padding: 14px 8px; border: 1.5px solid #8fe0ff; border-radius: 18px;
+          font: 700 30px/1.2 ui-monospace, Menlo, Consolas, monospace; letter-spacing: 3px; color: #fff; direction: ltr; }
+  a.button { display: block; margin: 0 0 12px; padding: 15px 16px; border-radius: 999px; text-decoration: none;
+             font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #f1eeff; border: 1.5px solid #4a4580; }
+  a.open { display: none; border: 0; color: #12142b; background: linear-gradient(90deg, #8fe0ff, #b9a6ff); }
+  small { display: block; margin-top: 20px; color: #8c86b5; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Tangleout</h1>
+  <p id="say">A puzzle about threads of light. Get the game:</p>
+  <div class="code" id="code"></div>
+  <a class="button open" id="open" href="#">Open in Tangleout</a>
+  <a class="button" id="play" href="https://play.google.com/store/apps/details?id=io.hmousavi.tangleout">Get it on Google Play</a>
+  <a class="button" href="https://cafebazaar.ir/app/io.hmousavi.tangleout.bazaar">Get it on Cafe Bazaar</a>
+  <small id="after"></small>
+</main>
+<script>
+  // The code of a challenge, as the game writes it: run, score, check letter. Anything else
+  // in the address is left alone, and the page then only leads to the stores.
+  var given = (new URLSearchParams(location.search).get('c') || '').trim().toUpperCase();
+  if (/^\d{1,4}-\d{1,2}-[A-HJ-NP-Z2-9]$/.test(given)) {
+    var link = 'tangleout://challenge?c=' + given;
+    document.getElementById('say').textContent = 'A friend challenges you to a sprint: the same boards, the same two minutes.';
+    var code = document.getElementById('code');
+    code.textContent = given;
+    code.style.display = 'block';
+    var open = document.getElementById('open');
+    open.href = link;
+    open.style.display = 'block';
+    // Google Play hands this on to the game after the install, so it opens on the challenge.
+    document.getElementById('play').href =
+      'https://play.google.com/store/apps/details?id=io.hmousavi.tangleout&referrer=' +
+      encodeURIComponent('utm_source=share&utm_medium=sprint&challenge=' + given);
+    document.getElementById('after').textContent =
+      'New to the game? Install it, clear the first level, open Sprint and tap "Enter a challenge code".';
+    // With the game on the phone this leads straight into it; without, nothing happens and the page stays.
+    location.href = link;
+  }
+</script>
+</body>
+</html>
