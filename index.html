@@ -32,10 +32,10 @@
   <small id="after"></small>
 </main>
 <script>
-  // The code of a challenge, as the game writes it: run, score, check letter. Anything else
+  // The code of a challenge, as the game writes it: run, score, three check characters. Anything else
   // in the address is left alone, and the page then only leads to the stores.
   var given = (new URLSearchParams(location.search).get('c') || '').trim().toUpperCase();
-  if (/^\d{1,4}-\d{1,2}-[A-HJ-NP-Z2-9]$/.test(given)) {
+  if (/^\d{1,4}-\d{1,2}-[A-HJ-NP-Z2-9]{3}$/.test(given)) {
     var link = 'tangleout://challenge?c=' + given;
     document.getElementById('say').textContent = 'A friend challenges you to a sprint: the same boards, the same two minutes.';
     var code = document.getElementById('code');
