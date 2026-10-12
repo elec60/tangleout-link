@@ -51,7 +51,9 @@
     document.getElementById('after').textContent =
       'New to the game? Install it, clear the first level, open Sprint and tap "Enter a challenge code".';
     // With the game on the phone this leads straight into it; without, nothing happens and the page stays.
-    location.href = link;
+    // Not on an iPhone or iPad: without the game, Safari answers a link it cannot open with an error box,
+    // so there the button is the way in.
+    if (!/iPhone|iPad|iPod/.test(navigator.userAgent)) location.href = link;
   }
 </script>
 </body>
