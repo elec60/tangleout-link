@@ -32,10 +32,39 @@
   <small id="after"></small>
 </main>
 <script>
+  // The check characters of a run and a score, worked out as Challenge.check in the game does: the same
+  // SplitMix64 as SeededRandom, the same salt and letters. Change one and the other must change with it.
+  // Without this, a code edited by hand showed here as a challenge and failed only once the game had opened.
+  // BigInt() and not 1n: an old browser without BigInt must still run the page; it then trusts the shape.
+  function check(run, score) {
+    var B = BigInt, all = B('0xFFFFFFFFFFFFFFFF'), letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', out = '';
+    var state = B('0x54616E676C656F75') ^ B(run * 100 + score);
+    for (var i = 0; i < 3; i++) {
+      state = (state + B('0x9E3779B97F4A7C15')) & all;
+      var z = state;
+      z = ((z ^ (z >> B(30))) * B('0xBF58476D1CE4E5B9')) & all;
+      z = ((z ^ (z >> B(27))) * B('0x94D049BB133111EB')) & all;
+      z = z ^ (z >> B(31));
+      out += letters[Number((z >> B(1)) % B(letters.length))];
+    }
+    return out;
+  }
+  function genuine(code) {
+    var parts = code.split('-'), run = +parts[0], score = +parts[1];
+    // Runs 1 to LevelSpec.SPRINT_RUNS (8999), scores 1 to 99, as Challenge allows.
+    if (run < 1 || run > 8999 || score < 1) return false;
+    return typeof BigInt === 'undefined' || check(run, score) === parts[2];
+  }
+
   // The code of a challenge, as the game writes it: run, score, three check characters. Anything else
   // in the address is left alone, and the page then only leads to the stores.
   var given = (new URLSearchParams(location.search).get('c') || '').trim().toUpperCase();
-  if (/^\d{1,4}-\d{1,2}-[A-HJ-NP-Z2-9]{3}$/.test(given)) {
+  var shaped = /^\d{1,4}-\d{1,2}-[A-HJ-NP-Z2-9]{3}$/.test(given);
+  if (shaped && !genuine(given)) {
+    document.getElementById('say').textContent =
+      'This challenge code is not right: it was changed or copied wrong. Ask your friend to share it again. Get the game:';
+  }
+  if (shaped && genuine(given)) {
     var link = 'tangleout://challenge?c=' + given;
     document.getElementById('say').textContent = 'A friend challenges you to a sprint: the same boards, the same two minutes.';
     var code = document.getElementById('code');
