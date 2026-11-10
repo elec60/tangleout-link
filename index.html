@@ -27,11 +27,19 @@
   <p id="say">A puzzle about threads of light. Get the game:</p>
   <div class="code" id="code"></div>
   <a class="button open" id="open" href="#">Open in Tangleout</a>
-  <a class="button" id="play" href="https://play.google.com/store/apps/details?id=io.hmousavi.tangleout">Get it on Google Play</a>
-  <a class="button" href="https://cafebazaar.ir/app/io.hmousavi.tangleout.bazaar">Get it on Cafe Bazaar</a>
+  <a class="button" id="appstore" href="https://apps.apple.com/app/id6829205098">Get it on the App Store</a>
+  <a class="button android" id="play" href="https://play.google.com/store/apps/details?id=io.hmousavi.tangleout">Get it on Google Play</a>
+  <a class="button android" href="https://cafebazaar.ir/app/io.hmousavi.tangleout.bazaar">Get it on Cafe Bazaar</a>
   <small id="after"></small>
 </main>
 <script>
+  // An iPhone or iPad can only install from the App Store, and an Android phone not from it,
+  // so each sees its own stores. Elsewhere, such as a computer, all of them stay.
+  var apple = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  var android = /Android/.test(navigator.userAgent);
+  if (apple) document.querySelectorAll('.android').forEach(function (a) { a.style.display = 'none'; });
+  if (android) document.getElementById('appstore').style.display = 'none';
+
   // The check characters of a run and a score, worked out as Challenge.check in the game does: the same
   // SplitMix64 as SeededRandom, the same salt and letters. Change one and the other must change with it.
   // Without this, a code edited by hand showed here as a challenge and failed only once the game had opened.
@@ -82,7 +90,7 @@
     // With the game on the phone this leads straight into it; without, nothing happens and the page stays.
     // Not on an iPhone or iPad: without the game, Safari answers a link it cannot open with an error box,
     // so there the button is the way in.
-    if (!/iPhone|iPad|iPod/.test(navigator.userAgent)) location.href = link;
+    if (!apple) location.href = link;
   }
 </script>
 </body>
